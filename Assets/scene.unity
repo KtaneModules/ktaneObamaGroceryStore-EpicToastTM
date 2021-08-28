@@ -178,6 +178,94 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1001 &567799313
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4379347986060890, guid: a178deb1e482cfe449bca40bd2ff2f0c, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4379347986060890, guid: a178deb1e482cfe449bca40bd2ff2f0c, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4379347986060890, guid: a178deb1e482cfe449bca40bd2ff2f0c, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4379347986060890, guid: a178deb1e482cfe449bca40bd2ff2f0c, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4379347986060890, guid: a178deb1e482cfe449bca40bd2ff2f0c, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4379347986060890, guid: a178deb1e482cfe449bca40bd2ff2f0c, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4379347986060890, guid: a178deb1e482cfe449bca40bd2ff2f0c, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4379347986060890, guid: a178deb1e482cfe449bca40bd2ff2f0c, type: 2}
+      propertyPath: m_RootOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1609047331930958, guid: a178deb1e482cfe449bca40bd2ff2f0c, type: 2}
+      propertyPath: m_Name
+      value: ObamaGroceryStore (1)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: a178deb1e482cfe449bca40bd2ff2f0c, type: 2}
+  m_IsPrefabParent: 0
+--- !u!1001 &628187830
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 480850, guid: 30c58dfe6604c9f45aba8b804a82bdf1, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 480850, guid: 30c58dfe6604c9f45aba8b804a82bdf1, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 480850, guid: 30c58dfe6604c9f45aba8b804a82bdf1, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 480850, guid: 30c58dfe6604c9f45aba8b804a82bdf1, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 480850, guid: 30c58dfe6604c9f45aba8b804a82bdf1, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 480850, guid: 30c58dfe6604c9f45aba8b804a82bdf1, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 480850, guid: 30c58dfe6604c9f45aba8b804a82bdf1, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 480850, guid: 30c58dfe6604c9f45aba8b804a82bdf1, type: 2}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 30c58dfe6604c9f45aba8b804a82bdf1, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1001 &1370729024
 Prefab:
   m_ObjectHideFlags: 0

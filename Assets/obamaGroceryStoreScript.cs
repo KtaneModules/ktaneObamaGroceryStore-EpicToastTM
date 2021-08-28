@@ -100,7 +100,8 @@ public class obamaGroceryStoreScript : MonoBehaviour {
             bombSolves = Bomb.GetSolvedModuleNames();
             foreach (string mod in currentSolves)
                 bombSolves.Remove(mod);
-            lastSolved = bombSolves.First().ToUpperInvariant();
+            lastSolved = bombSolves.Last().ToUpperInvariant();
+            // DebugMsg("Last solved mod is now " + lastSolved + "...");
         }
     }
 
