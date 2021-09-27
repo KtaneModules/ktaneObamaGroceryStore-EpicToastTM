@@ -24,16 +24,17 @@ public class obamaGroceryStoreScript : MonoBehaviour {
 
     static int moduleIdCounter = 1;
     int moduleId;
-    bool solved = false;
+    bool solved;
     
     string lastSolved = "OBAMA GROCERY STORE";
     List<string> currentSolves, bombSolves;
 
-    int currentlyShown = 0; // 0 = main screen, 1 = weapon, 2 = sidekick, 3 = food
+    private readonly List<KMSelectable[]> TPButtons = new List<KMSelectable[]>();
+    int currentlyShown; // 0 = main screen, 1 = weapon, 2 = sidekick, 3 = food
     static readonly string[] btnNames = { "Obomba", "Obamace", "Obamachete", "Stilettobama", "Torpedobama", "Ammobama", "Joe Biden", "Donald Trump", "Michelle Obama", "Rob-ama", "Oba-mary", "O-bob-a", "Obamango", "Obamacaroni", "Obeana", "Kabobama", "Avocadobama" };
     static readonly string[] stageNames = { "weapon", "sidekick", "food" };
-    int[] selectedBtns = { 99, 99, 99 };
-    int[] correctBtns = { 0, 0, 0 };
+    readonly int[] selectedBtns = { 99, 99, 99 };
+    readonly int[] correctBtns = { 0, 0, 0 };
 
     static readonly string[][] commonWords = {
         new string[3] { "MAZE", "NUMBER", "BEAN" },
@@ -65,37 +66,39 @@ public class obamaGroceryStoreScript : MonoBehaviour {
         for (int i = 0; i < 6; i++)
         {
             int j = i;
-            weaponButtons[i].OnInteract += delegate () { PressWeapon(j); weaponButtons[j].AddInteractionPunch(); Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, Module.transform); return false; };
-            weaponButtons[i].OnHighlight += delegate () { HighlightOption(j, true); };
-            weaponButtons[i].OnHighlightEnded += delegate () { HighlightOption(j, false); };
+            weaponButtons[i].OnInteract += delegate { PressWeapon(j); weaponButtons[j].AddInteractionPunch(); Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, Module.transform); return false; };
+            weaponButtons[i].OnHighlight += delegate { HighlightOption(j, true); };
+            weaponButtons[i].OnHighlightEnded += delegate { HighlightOption(j, false); };
 
-            sidekickButtons[i].OnInteract += delegate () { PressSidekick(j); sidekickButtons[j].AddInteractionPunch(); Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, Module.transform); return false; };
-            sidekickButtons[i].OnHighlight += delegate () { HighlightOption(6+j, true); };
-            sidekickButtons[i].OnHighlightEnded += delegate () { HighlightOption(6+j, false); };
+            sidekickButtons[i].OnInteract += delegate { PressSidekick(j); sidekickButtons[j].AddInteractionPunch(); Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, Module.transform); return false; };
+            sidekickButtons[i].OnHighlight += delegate { HighlightOption(6+j, true); };
+            sidekickButtons[i].OnHighlightEnded += delegate { HighlightOption(6+j, false); };
 
             if (i != 5)
             {
-                foodButtons[i].OnInteract += delegate () { PressFood(j); foodButtons[j].AddInteractionPunch(); Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, Module.transform); return false; };
-                foodButtons[i].OnHighlight += delegate () { HighlightOption(12+j, true); };
-                foodButtons[i].OnHighlightEnded += delegate () { HighlightOption(12+j, false); };
+                foodButtons[i].OnInteract += delegate { PressFood(j); foodButtons[j].AddInteractionPunch(); Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, Module.transform); return false; };
+                foodButtons[i].OnHighlight += delegate { HighlightOption(12+j, true); };
+                foodButtons[i].OnHighlightEnded += delegate { HighlightOption(12+j, false); };
             }
         }
         for (int i = 0; i < 3; i++)
         {
             int j = i;
-            obamaBodyButtons[i].OnInteract += delegate () { if (!animationPlaying) { SelectPart(j); } obamaBodyButtons[j].AddInteractionPunch(); Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, Module.transform); return false; };
+            obamaBodyButtons[i].OnInteract += delegate { if (!animationPlaying) { SelectPart(j); } obamaBodyButtons[j].AddInteractionPunch(); Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, Module.transform); return false; };
         }
 
         currentSolves = Bomb.GetSolvedModuleNames();
         mainObject.SetActive(true);
 
-        Game.OnLightsChange += delegate (bool state) { ToggleObama(state); };
+        Game.OnLightsChange += ToggleObama;
+        for (var i = 0; i < 3; i++)
+            TPButtons.Add(i == 0 ? weaponButtons : (i == 1 ? sidekickButtons : foodButtons));
     }
     
     private void Update()
     {
         if (solved) { return; }
-        if (currentSolves != Bomb.GetSolvedModuleNames() && Bomb.GetSolvedModuleNames().Count() != 0)
+        if (currentSolves != Bomb.GetSolvedModuleNames() && Bomb.GetSolvedModuleNames().Count != 0)
         {
             bombSolves = Bomb.GetSolvedModuleNames();
             foreach (string mod in currentSolves)
@@ -127,7 +130,7 @@ public class obamaGroceryStoreScript : MonoBehaviour {
                 foreach (var word in commonWords[i])
                     if (lastSolved.Contains(word)) { rows[i] = true; break; }
 
-            if (rows.Where(x => x).Count() == 0) // no rows in common
+            if (!rows.Any(x => x)) // no rows in common
             {
                 int sum = 0;
                 char[] lastSolvedLetters = lastSolved.Where(x => alphabet.Contains(x)).ToArray();
@@ -135,19 +138,19 @@ public class obamaGroceryStoreScript : MonoBehaviour {
                     sum += Array.IndexOf(alphabet, lastSolvedLetters[i * 5 + Bomb.GetBatteryCount() % 5]) + 1;
                 correctBtns[0] = sum % 6;
             }
-            else if (rows.Where(x => x).Count() == 1) // one row in common
+            else if (rows.Count(x => x) == 1) // one row in common
                 correctBtns[0] = Array.IndexOf(rows, true);
             else
                 for (int i = 0; i < 6; i++)
                     if (rows[i]) { correctBtns[0] = i; break; }
 
             // Sidekick check
-            rows = new bool[6] { false, false, false, false, false, false };
+            rows = new[] { false, false, false, false, false, false };
             for (int i = 0; i < 6; i++)
                 foreach (var mod in authorMods[i])
                     if (lastSolved == mod) { rows[i] = true; break; }
 
-            if (rows.Where(x => x).Count() == 0) // no rows in common
+            if (!rows.Any(x => x)) // no rows in common
             {
                 int sum = 0;
                 char[] lastSolvedLetters = lastSolved.Where(x => alphabet.Contains(x)).ToArray();
@@ -164,7 +167,7 @@ public class obamaGroceryStoreScript : MonoBehaviour {
                         sum++;
                 correctBtns[1] = sum % 6;
             }
-            else if (rows.Where(x => x).Count() == 1) // one row in common
+            else if (rows.Count(x => x) == 1) // one row in common
                 correctBtns[1] = Array.IndexOf(rows, true);
             else
                 for (int i = 5; i >= 0; i--)
@@ -172,12 +175,12 @@ public class obamaGroceryStoreScript : MonoBehaviour {
 
             // Food check
             
-            rows = new bool[5] { false, false, false, false, false };
+            rows = new[] { false, false, false, false, false };
             for (int i = 0; i < 5; i++)
                 if (!commonLetters[i].Any(x => lastSolved.Contains(x)))
                     rows[i] = true;
             
-            if (rows.Where(x => x).Count() == 0) // no rows in common
+            if (!rows.Any(x => x)) // no rows in common
             {
                 int sum = 0;
                 int vowelCount = 0;
@@ -207,7 +210,7 @@ public class obamaGroceryStoreScript : MonoBehaviour {
                 
                 correctBtns[2] = sum % 5;
             }
-            else if (rows.Where(x => x).Count() == 1) // one row in common
+            else if (rows.Count(x => x) == 1) // one row in common
                 correctBtns[2] = Array.IndexOf(rows, true);
             else
                 for (int i = 0; i < 5; i++)
@@ -285,19 +288,13 @@ public class obamaGroceryStoreScript : MonoBehaviour {
 
     void HighlightOption(int btn, bool highlighting)
     {
-        if (highlighting)
-            displayText.text = btnNames[btn];
-        else
-            displayText.text = "Go Back";
+        displayText.text = highlighting ? btnNames[btn] : "Go Back";
     }
 
     void ToggleObama(bool state)
     {
         lightsOn = state;
-        if (state)
-            obamaRenderer.color = Color.white;
-        else
-            obamaRenderer.color = darkColor;
+        obamaRenderer.color = state ? Color.white : darkColor;
     }
 
     IEnumerator Animation(bool correct)
@@ -313,10 +310,7 @@ public class obamaGroceryStoreScript : MonoBehaviour {
             int placeholder = Random.Range(0, 3);
             Audio.PlaySoundAtTransform("punch" + (placeholder+1), Module.transform);
             obamaBodyButtons[Random.Range(0, 3)].AddInteractionPunch((3 - placeholder) * 3 + Random.Range(0, 3));
-            if (i % 2 == 0)
-                obamaRenderer.flipX = true;
-            else
-                obamaRenderer.flipX = false;
+            obamaRenderer.flipX = i % 2 == 0;
             yield return new WaitForSeconds(punchLengths[placeholder]);
         }
 
@@ -377,5 +371,69 @@ public class obamaGroceryStoreScript : MonoBehaviour {
     void DebugMsg(string msg)
     {
         Debug.LogFormat("[Obama Grocery Store #{0}] {1}", moduleId, msg);
+    }
+
+    private const string TwitchHelpMessage =
+        "Browse items using '!{0} browse <wepaons, sidekicks, foods>'. Select an item using '!{0} select <item>'. Submit your answer using '!{0} submit'.";
+
+    private IEnumerator ProcessTwitchCommand(string command)
+    {
+        command = command.ToLowerInvariant().Trim();
+
+        if (command == "submit")
+        {
+            if (currentlyShown != 0)
+            {
+                displayButton.OnInteract();
+                yield return new WaitForSeconds(.1f);
+            }
+
+            yield return null;
+            displayButton.OnInteract();
+            yield break;
+        }
+        if (command == "back")
+        {
+            if (currentlyShown == 0)
+                yield break;
+            yield return null;
+            displayButton.OnInteract();
+            yield break;
+        }
+
+        var parsedCommand = command.Split(' ');
+        switch (parsedCommand[0])
+        {
+            case "browse":
+                if (parsedCommand.Length != 2 || !new[] {"weapon", "sidekick", "food", "weapons", "sidekicks", "foods"}.Contains(parsedCommand[1]))
+                    yield break;
+                yield return null;
+                if (currentlyShown != 0)
+                {
+                    displayButton.OnInteract();
+                    yield return new WaitForSeconds(.1f);
+                }
+                obamaBodyButtons[new[] {"weapon", "sidekick", "food", "weapons", "sidekicks", "foods"}.ToList().IndexOf(parsedCommand[1]) % 3].OnInteract();
+                break;
+            case "select":
+                if (currentlyShown == 0)
+                    yield break;
+                var selected = parsedCommand.Skip(1).Join();
+                if (!btnNames.Select(x => x.ToLowerInvariant()).Skip(6 * (currentlyShown - 1)).Take(6).Contains(selected))
+                    yield break;
+                yield return null;
+                TPButtons[currentlyShown - 1][btnNames.Select(x => x.ToLowerInvariant()).Skip(6 * (currentlyShown - 1)).Take(6).ToList().IndexOf(selected)]
+                    .OnInteract();
+                break;
+        }
+    }
+
+    private IEnumerator TwitchHandleForcedSolve()
+    {
+        if (currentlyShown != 0)
+            displayButton.OnInteract();
+        StartCoroutine(Animation(true));
+        while (!solved)
+            yield return true;
     }
 }
