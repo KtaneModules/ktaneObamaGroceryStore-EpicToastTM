@@ -27,7 +27,7 @@ public class obamaGroceryStoreScript : MonoBehaviour {
     bool solved;
     
     string lastSolved = "OBAMA GROCERY STORE";
-    List<string> currentSolves, bombSolves;
+    List<string> currentSolves;
 
     private readonly List<KMSelectable[]> TPButtons = new List<KMSelectable[]>();
     int currentlyShown; // 0 = main screen, 1 = weapon, 2 = sidekick, 3 = food
@@ -98,12 +98,9 @@ public class obamaGroceryStoreScript : MonoBehaviour {
     private void Update()
     {
         if (solved) { return; }
-        if (currentSolves != Bomb.GetSolvedModuleNames() && Bomb.GetSolvedModuleNames().Count != 0)
+        if (currentSolves.Count != Bomb.GetSolvedModuleNames().Count)
         {
-            bombSolves = Bomb.GetSolvedModuleNames();
-            foreach (string mod in currentSolves)
-                bombSolves.Remove(mod);
-            lastSolved = bombSolves.Last().ToUpperInvariant();
+            lastSolved = getLatestSolve(Bomb.GetSolvedModuleNames(), currentSolves);
             // DebugMsg("Last solved mod is now " + lastSolved + "...");
         }
     }
@@ -117,6 +114,21 @@ public class obamaGroceryStoreScript : MonoBehaviour {
         weaponObject.SetActive(false);
         sidekickObject.SetActive(false);
         foodObject.SetActive(false);
+    }
+
+    string getLatestSolve(List<string> s, List<string> s2)
+    {
+        string name = "";
+        for (int i = 0; i < s2.Count; i++)
+        {
+            s.Remove(s2.ElementAt(i));
+        }
+        for (int i = 0; i < s.Count; i++)
+        {
+            currentSolves.Add(s.ElementAt(i));
+        }
+        name = s.ElementAt(0);
+        return name;
     }
 
     void PressDisplay()
