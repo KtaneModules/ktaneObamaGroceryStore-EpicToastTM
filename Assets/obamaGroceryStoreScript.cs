@@ -100,7 +100,7 @@ public class obamaGroceryStoreScript : MonoBehaviour {
         if (solved) { return; }
         if (currentSolves.Count != Bomb.GetSolvedModuleNames().Count)
         {
-            lastSolved = getLatestSolve(Bomb.GetSolvedModuleNames(), currentSolves);
+            lastSolved = getLatestSolve(Bomb.GetSolvedModuleNames(), currentSolves).ToUpperInvariant();
             // DebugMsg("Last solved mod is now " + lastSolved + "...");
         }
     }
